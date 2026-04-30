@@ -21,7 +21,11 @@ export function loadSnapshotStore(storePath: string = DEFAULT_SNAPSHOT_PATH): Sn
     return { snapshots: [] };
   }
   const raw = fs.readFileSync(storePath, 'utf-8');
-  return JSON.parse(raw) as SnapshotStore;
+  try {
+    return JSON.parse(raw) as SnapshotStore;
+  } catch {
+    throw new Error(`Failed to parse snapshot store at "${storePath}": file may be corrupted.`);
+  }
 }
 
 export function saveSnapshotStore(store: SnapshotStore, storePath: string = DEFAULT_SNAPSHOT_PATH): void {
